@@ -1,0 +1,65 @@
+---
+title: "lab2_wenhui"
+author: "wenhui li"
+date: "9/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# 1
+```{r}
+library(classdata)
+data(choco)
+hist(choco$CocoaPercent)
+boxplot(choco$CocoaPercent)
+```
+
+From the histogram plot and the boxplot, I would say most of cocoapercent is around 65-75 percent. There are outliers at 95-100 percent and 40-50 percent. 
+
+# 2
+```{r}
+meanrating <- tapply(choco$Rating,choco$CountryBeanOrigin,mean)
+top10 <- sort(meanrating, decreasing = TRUE)[1:10]
+barplot(top10,las = 2, cex.names = 0.5)
+```
+
+I take the top10 countries to make the graph readable. The result is showed above.
+
+# 3
+```{r}
+relation <- tapply(choco$Rating,choco$CocoaPercent, mean)
+high10 <- sort(relation, decreasing = TRUE)[1:10]
+low10 <- sort(relation)[1:10]
+relationhl<- c(low10,high10)
+final<- sort(relationhl,decreasing = TRUE)
+barplot(final, las=2, cex.names = 0.5)
+```
+
+I took the mean Rating as the numerical summaries. To make the graph readable, I took 10 high values and 10 low values. From the barplot I would say the best cocoa percent is around 50-80 percent.
+
+# 4
+```{r}
+origins <- tapply(choco$CocoaPercent,choco$CountryBeanOrigin, mean)
+barplot(origins,las = 2, cex.names = 0.5)
+```
+
+I used the mean of cocoa percent to define the flavor of chocolate by different bean origins. I can see from the barplot that most of places produced about 60-80 cocoapercent chocolate. This is also consistent with the result I got from question#3. However, Martinque's chocolates have 40 percents of cocoa on mean which is the different one.
+
+# 5
+## Question1: Which year's chocolates have the best rating result?
+```{r}
+years <- tapply(choco$Rating,choco$ReviewDate, mean)
+barplot(years,las = 2, cex.names = 0.5)
+```
+
+I also take the mean value of the rating compare with years. From the barplot, I would say products reviewd in 2017 has the highest rating value.
+
+## Questin2: How is the rating in 2019?
+```{r}
+rating19 <- choco[choco$ReviewDate == 2019,'Rating']
+print(mean(rating19))
+```
+
+I used the mean rating of chocolate reviewd in 2019 to present the result which is printed above.
