@@ -1,0 +1,56 @@
+---
+title: "lab3"
+author: "wenhui li"
+date: "10/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readxl)
+dat <- readxl::read_xls('lab3.xls')
+```
+# 1
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+datclean <- dat %>% mutate(HighestSchoolCompleted = as.numeric(HighestSchoolCompleted),
+                           AgeOfRespondent = as.numeric(AgeOfRespondent))
+q1 <- datclean %>% group_by(MaritalStatus) %>% summarize(school = mean(HighestSchoolCompleted, na.rm=TRUE)) %>% arrange(desc(school))
+ggplot(q1, aes(x= MaritalStatus,weight= school)) + geom_bar() + ylab('Average years of education')
+```
+
+From the barplot I would say that the average years of education have no relationship with the marital status.
+
+# 2
+```{r}
+q2 <- filter(datclean, MaritalStatus == 'No answer' & HighestSchoolCompleted>15.5 | MaritalStatus == 'Divorced' & HighestSchoolCompleted >13.1 | MaritalStatus == 'Married' & HighestSchoolCompleted >13.0 | MaritalStatus == 'Never married' & HighestSchoolCompleted>13.4 | MaritalStatus == 'Separated' & HighestSchoolCompleted >11.9 | MaritalStatus == 'Widowed' & HighestSchoolCompleted >11.2)
+str(q2)
+```
+
+# 3
+```{r}
+q3 <- filter(datclean, GeneralHappiness %in% c('Very happy','Pretty happy','Not too happy')) %>% mutate(HappyOrNot  = (GeneralHappiness %in% c('Very happy','Pretty happy')))
+ggplot(q3, aes(x=MaritalStatus,fill = HappyOrNot)) + geom_bar(position ='fill')
+```
+
+From the barchart I would see that in all different kinds of marital status, nearly 75% of the respondents are happy. In my opinion, happiness has a very weak relationship with marital status.
+
+# 4
+```{r}
+q4 <- filter(datclean, GeneralHappiness %in% c('Very happy','Pretty happy','Not too happy')) %>% mutate(HappyOrNot  = (GeneralHappiness %in% c('Very happy','Pretty happy')))
+ggplot(q4, aes(x=PoliticalPartyAffiliation,fill = HappyOrNot)) + geom_bar()+coord_flip()
+```
+
+From the barplot I would say that respondents who have a political party are more happy than unhappy because there are more count of true than false in each bar.
+
+# 5
+## Does average age of the respondents affect the relationship with happiness?
+```{r}
+q5 <- filter(datclean, GeneralHappiness %in% c('Very happy','Pretty happy','Not too happy')) %>% mutate(HappyOrNot  = (GeneralHappiness %in% c('Very happy','Pretty happy')))
+q5 <- q5 %>% group_by(HappyOrNot) %>% summarize(age = mean(AgeOfRespondent, na.rm=TRUE)) %>% arrange(desc(age))
+table(q5)
+```
+
+From the table above, I would say that happiness has a weak relationship with average age. It is because the average age of happy people and unhappy people are all around 45-46. It's just a characteristic of respondents.
